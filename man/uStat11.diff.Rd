@@ -4,16 +4,15 @@
 \alias{uStat11.diff}
 \title{Create the kernel and design matrices for uStat11}
 \usage{
-uStat11.diff(df.input, keyColumns = c("readerID", "caseID", "modalityID",
-  "score"), modalitiesToCompare = c("modalityA", "modalityB", "modalityA",
-  "modalityB"))
+uStat11.diff(df.input, modalitiesToCompare, keyColumns = c("readerID",
+  "caseID", "modalityID", "score"))
 }
 \arguments{
 \item{df.input}{Data frame of observations, one per row. Columns also identify random and fixed effects.}
 
-\item{keyColumns}{The required columns}
-
 \item{modalitiesToCompare}{The factors identifying the modalities to compare}
+
+\item{keyColumns}{The required columns}
 }
 \description{
 The kernel is the difference kernel

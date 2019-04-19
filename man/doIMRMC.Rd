@@ -5,7 +5,7 @@
 \title{MRMC analysis of the area under the ROC curve}
 \usage{
 doIMRMC(data = NULL, fileName = NULL, workDir = NULL,
-  iMRMCjarFullPath = NULL, stdout = FALSE, stderr = FALSE,
+  iMRMCjarFullPath = NULL, stdout = NULL, stderr = NULL,
   stripDatesForTests = FALSE)
 }
 \arguments{
@@ -93,14 +93,12 @@ for the iMRMC program (found at https://github.com/DIDSR/iMRMC/releases), it exe
 program which writes the results to the local files system, it reads the analysis results from
 the local file system, packs the analysis results into a list object, deletes the data and analysis results
 from the local file system, and returns the list object.
-}
-\examples{
+
+The examples took too long for CRAN to accept. So here is an example:
 # Create a sample configuration file
 config <- sim.gRoeMetz.config()
 # Simulate an MRMC ROC data set
 dFrame.imrmc <- sim.gRoeMetz(config)
 # Analyze the MRMC ROC data
 result <- doIMRMC(dFrame.imrmc)
-
-
 }

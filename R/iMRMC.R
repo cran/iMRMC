@@ -14,6 +14,15 @@
 #' program which writes the results to the local files system, it reads the analysis results from
 #' the local file system, packs the analysis results into a list object, deletes the data and analysis results
 #' from the local file system, and returns the list object.
+#' 
+#' The examples took too long for CRAN to accept. So here is an example:
+#' # Create a sample configuration file
+#' config <- sim.gRoeMetz.config()
+#' # Simulate an MRMC ROC data set
+#' dFrame.imrmc <- sim.gRoeMetz(config)
+#' # Analyze the MRMC ROC data
+#' result <- doIMRMC(dFrame.imrmc)
+
 #'
 #' @param data This data.frame contains the following variables:
 #'            readerID       [Factor] w/ nR levels "reader1", "reader2", ...
@@ -85,28 +94,29 @@
 #'              The different decompositions are BCK, BDG, DBM, MS, OR.
 #'
 #'
+#'
 #' @export
 #'
-#' @examples
-#' # Create a sample configuration file
-#' config <- sim.gRoeMetz.config()
-#' # Simulate an MRMC ROC data set
-#' dFrame.imrmc <- sim.gRoeMetz(config)
-#' # Analyze the MRMC ROC data
-#' result <- doIMRMC(dFrame.imrmc)
-#'
-#'
+# @examples
+# # Create a sample configuration file
+# config <- sim.gRoeMetz.config()
+# # Simulate an MRMC ROC data set
+# dFrame.imrmc <- sim.gRoeMetz(config)
+# # Analyze the MRMC ROC data
+# result <- doIMRMC(dFrame.imrmc)
+#
+#
 doIMRMC <- function(
   data = NULL,
   fileName = NULL,
   workDir = NULL,
   iMRMCjarFullPath = NULL,
-  stdout = FALSE,
-  stderr = FALSE,
+  stdout = NULL,
+  stderr = NULL,
   stripDatesForTests = FALSE){
 
   if (is.null(workDir)) {
-    workDir <- tempdir()
+    workDir <- normalizePath(tempdir())
   }
 
   if (is.null(data)) {
@@ -132,14 +142,14 @@ doIMRMC <- function(
   }
 
   if (is.null(iMRMCjarFullPath)) {
-    iMRMCjar <- "iMRMC-v4.0.0.jar"
+    iMRMCjar <- "iMRMC-v4.0.3.jar"
     pkgPath = path.package("iMRMC", quiet = FALSE)
     iMRMCjarFullPath <- file.path(pkgPath, "java", iMRMCjar)
 
     # This check is necessary for testthat tests that run in some
     # virtual environment that is not like reality
     if (!file.exists(iMRMCjarFullPath)) {
-      iMRMCjarFullPath = paste(pkgPath, "/inst/java/", iMRMCjar, sep = "")
+      iMRMCjarFullPath = file.path(pkgPath, "inst","java", iMRMCjar)
     }
   }
 
@@ -164,7 +174,7 @@ doIMRMC <- function(
   OR <- readVarDecomp(file.path(workDir, "imrmcDir", "ORtable.csv"))
 
   ROC <- by(ROCraw, ROCraw[, 1], function(x) {
-    list(desc = x[1,1], n = x[1,2],
+    list(desc = as.character(x[1,1]), n = as.numeric(x[1,2]),
          fpf = as.numeric(x[x[,3] == "FPF", 4:(3 + x[1,2])]),
          tpf = as.numeric(x[x[,3] == "TPF", 4:(3 + x[1,2])])
       )
@@ -184,7 +194,7 @@ doIMRMC <- function(
   }
 
   # Delete the content written to disk
-  if (workDir == tempdir()) {
+  if (workDir == normalizePath(tempdir())){
     unlink(file.path(workDir, "imrmcDir"), recursive = TRUE)
 
     if (flagWriteFile) {

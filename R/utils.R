@@ -91,10 +91,377 @@ undoIMRMCdf <- function(df.MRMC) {
   df.Truth <- df.Truth[, c("caseID", "score")]
   names(df.Truth) <- c("caseID", "truth")
 
-  df <- merge(df.Obs, df.Truth, by = "caseID")
+  df <- droplevels(merge(df.Obs, df.Truth, by = "caseID"))
 
   return(df)
 
+}
+
+# Get a score from an MRMC data frame ####
+#' Get a score from an MRMC data frame
+#'
+#' @param df An MRMC data frame
+#'
+#' @param iR The numeric index of the readerID
+#'
+#' @param iC The numeric index of the caseID
+#'
+#' @param modality The character description of the modalityID
+#'
+#' @return The score
+#'
+#' @export
+#'
+# @examples
+# # Simulate an MRMC data frame ####
+# simRoeMetz.config <- sim.gRoeMetz.config()
+# dFrameMRMC <- sim.gRoeMetz(simRoeMetz.config)
+# desc <- dFrameMRMC[
+#   as.numeric(dFrameMRMC$readerID) == 2 &
+#     as.numeric(dFrameMRMC$caseID) == 4 &
+#     dFrameMRMC$modalityID == "testA",
+# ]
+# print(desc$score)
+# print(getMRMCscore(dFrameMRMC, 2, 4, "testA"))
+
+getMRMCscore <- function(df, iR, iC, modality) {
+  score <- df[as.numeric(df$readerID) == iR &
+                as.numeric(df$caseID) == iC &
+                df$modalityID == modality, "score"]
+  if (length(score) == 0) score <- NULL
+  return(score)
+}
+
+# Convert an MRMC data frame to a score matrix ####
+#' Convert an MRMC data frame to a score matrix
+#'
+#' @description Convert an MRMC data frame to a score matrix, dropping readers or cases with no observations
+#'
+#' @param dfMRMC An MRMC data frame
+#'
+#' @param modality The score matrix depends on the modality.
+#'   If more than one modality exists in the data frame,
+#'   you must specify which modality to subset.
+#'
+#' @param dropFlag [logical] The default setting (TRUE) removes readers and cases
+#'   that have no observations. Dropping them by default will speed up analyses.
+#'   Leaving the levels (dropFlag = FALSE) is useful if you need the entire score
+#'   or design matrix when comparing or doing analyses with two modalities.
+#'
+#' @return A matrix [nCases, nReaders] of the scores each reader reported for each case
+#'
+#' @importFrom stats qnorm
+#'
+#' @export
+#'
+convertDFtoScoreMatrix <- function(dfMRMC, modality = NULL, dropFlag = TRUE) {
+
+  # If modality is specified, subset the data on modalityID == modality
+  if (!is.null(modality)) {
+    dfMRMC <- dfMRMC[dfMRMC$modalityID == modality, ]
+    dfMRMC$modalityID <- factor(dfMRMC$modalityID)
+  }
+
+  # Check that there is data from one modality only.
+  if (nlevels(dfMRMC$modalityID) != 1) {
+    desc <- paste("This function only treats data sets with one modality.\n",
+                  "nlevels(dfMRMC$modalityID) =", nlevels(dfMRMC$modalityID), "\n")
+    stop(desc)
+  }
+
+  # Dropping levels will remove readers or cases that have no observations
+  # Dropping them by default will speed up analyses
+  # Leaving the levels is useful if you want to see the entire score or design matrix
+  if (dropFlag) {
+    dfMRMC <- droplevels(dfMRMC)
+  }
+
+  caseIDs <- levels(dfMRMC$caseID)
+  readerIDs <- levels(dfMRMC$readerID)
+  nCases <- nlevels(dfMRMC$caseID)
+  nReaders <- nlevels(dfMRMC$readerID)
+
+  scores <- array(-1, c(nCases, nReaders), dimnames = list(caseIDs, readerIDs))
+
+  index <- dfMRMC[ , c("caseID","readerID")]
+  index <- data.matrix(index)
+
+  scores[index] <- dfMRMC$score
+  return(scores)
+
+}
+
+# Convert an MRMC data frame to a design matrix ####
+#' Convert an MRMC data frame to a design matrix
+#'
+#' @description Convert an MRMC data frame to a design matrix, dropping readers or cases with no observations
+#'
+#' @param dfMRMC An MRMC data frame
+#'
+#' @param modality The score matrix depends on the modality.
+#'   If more than one modality exists in the data frame,
+#'   you must specify which modality to subset.
+#'
+#' @param dropFlag [logical] The default setting (TRUE) removes readers and cases
+#'   that have no observations. Dropping them by default will speed up analyses.
+#'   Leaving the levels (dropFlag = FALSE) is useful if you need the entire score
+#'   or design matrix when comparing or doing analyses with two modalities.
+#'
+#' @return A matrix [nCases, nReaders] indicating which scores were reported for each reader and case
+#'
+#' @export
+#'
+convertDFtoDesignMatrix <- function(dfMRMC, modality = NULL, dropFlag = TRUE) {
+
+  # If modality is specified, subset the data on modalityID == modality
+  if (!is.null(modality)) {
+    dfMRMC <- dfMRMC[dfMRMC$modalityID == modality, ]
+    dfMRMC$modalityID <- factor(dfMRMC$modalityID)
+  }
+
+  # Check that there is data from one modality only.
+  if (nlevels(dfMRMC$modalityID) != 1) {
+    desc <- paste("This function only treats data sets with one modality.\n",
+                  "nlevels(dfMRMC$modalityID) =", nlevels(dfMRMC$modalityID), "\n")
+    stop(desc)
+  }
+
+  # Dropping levels will remove readers or cases that have no observations
+  # Dropping them by default will speed up analyses
+  # Leaving the levels is useful if you want to see the entire score or design matrix
+  if (dropFlag) {
+    dfMRMC <- droplevels(dfMRMC)
+  }
+
+  caseIDs <- levels(dfMRMC$caseID)
+  readerIDs <- levels(dfMRMC$readerID)
+  nCases <- nlevels(dfMRMC$caseID)
+  nReaders <- nlevels(dfMRMC$readerID)
+
+  design <- array(0, c(nCases, nReaders), dimnames = list(caseIDs, readerIDs))
+
+  index <- dfMRMC[ , c("caseID","readerID")]
+  index <- data.matrix(index)
+
+  design[index] <- 1
+
+  return(design)
+
+}
+
+## Extract between-reader between-modality pairs of scores ####
+#' Extract between-reader between-modality pairs of scores
+#'
+#' @param data0 This data frame includes columns for readerID, caseID, modalityID, score.
+#'
+#' @param modalities The modalities (testA, testB) for the scores to be paired
+#'
+#' @param keyColumns This list identifies the column names
+#' of the data frame to be used for the analysis.
+#'        list(readerID = "***", caseID = "***",
+#'             modalityID = "***", score = "***", truth="***")
+#'
+#' @return A data frame of all paired observations.
+#'   Each observation comes from a pair of readers evaluating a case in two modalities.
+#'   The first column corresponds to one reader evaluating the case in testA.
+#'   The second column corresonds to the other reader evaluating the case in testB.
+#'
+#' @export
+#'
+# @examples
+extractPairedComparisonsBRBM <- function(
+  data0,
+  modalities = c("testA", "testB"),
+  keyColumns = list(readerID = "readerID",
+                    caseID = "caseID",
+                    modalityID = "modalityID",
+                    score = "score")
+) {
+
+  readerID <- keyColumns$readerID
+  caseID <- keyColumns$caseID
+  modalityID <- keyColumns$modalityID
+  score <- keyColumns$score
+
+  dfMRMC <- data.frame(
+    readerID   = data0[ , readerID],
+    caseID     = data0[ , caseID],
+    modalityID = data0[ , modalityID],
+    score      = data0[ , score]
+  )
+
+  # Verify that the key columns exist
+
+  # Pool reader counts into a contingency table ####
+  modality.X <- modalities[1]
+  modality.Y <- modalities[2]
+
+  # Split the data by modalities
+  df.X <- dfMRMC[dfMRMC$modalityID == modality.X,]
+  df.Y <- dfMRMC[dfMRMC$modalityID == modality.Y,]
+
+  # Split the data by readers
+  df.XR <- split(df.X, list(df.X$readerID), drop = TRUE)
+  nReadersX <- length(df.XR)
+  readersX <- names(df.XR)
+
+  df.YR <- split(df.Y, list(df.Y$readerID), drop = TRUE)
+  nReadersY <- length(df.YR)
+  readersY <- names(df.YR)
+
+  reader.i <- 1
+  reader.j <- 2
+
+  x <- NULL
+  y <- NULL
+  for (readerXi in readersX) {
+    for (readerYj in readersY) {
+
+      if (readerXi == readerYj) next()
+
+      df.RxR <- merge(df.XR[[readerXi]], df.YR[[readerYj]], by = "caseID")
+      x <- c(x, df.RxR$score.x)
+      y <- c(y, df.RxR$score.y)
+
+    }
+
+  }
+
+  return(data.frame(x = x, y = y))
+
+}
+
+## Extract within-reader between-modality pairs of scores ####
+#' Extract within-reader between-modality pairs of scores
+#'
+#' @param data0 This data frame includes columns for readerID, caseID, modalityID, score.
+#'
+#' @param modalities The modalities (testA, testB) for the scores to be paired
+#'
+#' @param keyColumns This list identifies the column names
+#' of the data frame to be used for the analysis.
+#'        list(readerID = "***", caseID = "***",
+#'             modalityID = "***", score = "***", truth="***")
+#'
+#' @return A data frame of all paired observations.
+#'   Each observation comes from a one reader evaluating a case in two modalities
+#'   The first column corresponds to one reader evaluating the case in testA.
+#'   The second column corresonds to the same reader evaluating the case in testB.
+#'
+#' @export
+#'
+# @examples
+extractPairedComparisonsWRBM <- function(
+  data0,
+  modalities = "testA",
+  keyColumns = list(readerID = "readerID",
+                    caseID = "caseID",
+                    modalityID = "modalityID",
+                    score = "score")
+) {
+
+  readerID <- keyColumns$readerID
+  caseID <- keyColumns$caseID
+  modalityID <- keyColumns$modalityID
+  score <- keyColumns$score
+
+  dfMRMC <- data.frame(
+    readerID   = data0[ , readerID],
+    caseID     = data0[ , caseID],
+    modalityID = data0[ , modalityID],
+    score      = data0[ , score]
+  )
+
+  # Pool reader counts into a contingency table
+  modality.X <- modalities[1]
+  modality.Y <- modalities[2]
+
+  # Split the data by modalities
+  df.X <- dfMRMC[dfMRMC$modalityID == modality.X,]
+  df.Y <- dfMRMC[dfMRMC$modalityID == modality.Y,]
+
+  # Split the data by readers
+  df.XR <- split(df.X, df.X$readerID, drop = TRUE)
+  nReadersX <- length(df.XR)
+  readersX <- names(df.XR)
+
+  df.YR <- split(df.Y, df.Y$readerID, drop = TRUE)
+  nReadersY <- length(df.YR)
+  readersY <- names(df.YR)
+
+  reader.i <- 1
+  reader.j <- 2
+
+  x <- NULL
+  y <- NULL
+  for (readerXi in readersX) {
+    for (readerYj in readersY) {
+
+      if (readerXi != readerYj) next()
+
+      df.RxR <- merge(df.XR[[readerXi]], df.YR[[readerYj]], by = "caseID")
+      x <- c(x, df.RxR$score.x)
+      y <- c(y, df.RxR$score.y)
+
+    }
+
+  }
+
+  return(data.frame(x = x, y = y))
+
+}
+
+## createGroups ####
+#' Assign a group label to items in a vector
+#'
+#' @param items A vector of items
+#' @param nG The number of groups
+#'
+#' @return A data frame containing the items and their group labels
+#' @export
+#'
+#' @examples
+#' x <- paste("item", 1:10, sep = "")
+#' df <- createGroups(x, 3)
+#' print(df)
+#'
+createGroups <- function(items, nG) {
+
+  n <- length(items)
+
+  # Determine the number of items in each group
+  nPerG.base <- floor(n/nG)
+  remainder <- n - nPerG.base*nG
+  nPerG <- rep(nPerG.base, nG)
+  if (remainder) nPerG[1:remainder] <- nPerG[1:remainder] + 1
+
+  # Create labels for each reader
+  desc <- NULL
+  for (i in 1:nG) desc <- c(desc, rep(paste("group", i, sep = ""), nPerG[i]))
+
+  readerGroups <- data.frame(items = items, desc = desc)
+
+  return(readerGroups)
+
+}
+
+## renameCol ####
+#' Rename a data frame column name or a list object name
+#'
+#' @param df A data frame
+#'
+#' @param oldColName Old column name
+#'
+#' @param newColName New column name
+#'
+#' @return the data frame with the updated column name
+#'
+#' @export
+#'
+# @examples
+renameCol <- function(df, oldColName, newColName) {
+  names(df)[names(df) == oldColName] <- newColName
+  return(df)
 }
 
 ## roc2binary ####
@@ -194,5 +561,24 @@ successDFtoROCdf <- function(df) {
   )
 
   return(df.AUC)
+}
+
+## createDFdocumentation ####
+createDFdocumentation <- function(df) {
+
+  desc1 <- utils::capture.output(utils::str(df))
+  nVar <- length(desc1) - 1
+
+  desc2 <- c(
+    paste("#\' \\code{", deparse(substitute(df)), "} is a", desc1[1], "\\cr \n"),
+    "#\'   \\itemize{ \\cr \n",
+    paste("#\'     \\item \\code{", desc1[2:nVar], "} \\cr \n"),
+    "#\'   }"
+  )
+
+  cat(desc2)
+
+  return(desc2)
+
 }
 

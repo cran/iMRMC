@@ -4,15 +4,15 @@
 \alias{uStat11.identity}
 \title{Create the kernel and design matrices for uStat11}
 \usage{
-uStat11.identity(df.input, keyColumns = c("readerID", "caseID", "modalityID",
-  "score"), modalitiesToCompare = c("modalityA", "modalityB"))
+uStat11.identity(df.input, modalitiesToCompare,
+  keyColumns = c("readerID", "caseID", "modalityID", "score"))
 }
 \arguments{
 \item{df.input}{Data frame of observations, one per row. Columns also identify random and fixed effects.}
 
-\item{keyColumns}{The required columns}
-
 \item{modalitiesToCompare}{The factors identifying the modalities to compare}
+
+\item{keyColumns}{The required columns}
 }
 \description{
 The kernel is the identity kernel

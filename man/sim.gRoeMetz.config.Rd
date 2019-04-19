@@ -45,11 +45,3 @@ depend on modality or truth (mu.neg, mu.pos, var_r, var_c, var_rc).
 If no arguments, this function returns a default simulation
 configuration for sim.gRoeMetz
 }
-\examples{
-# Create a sample configuration object
-config <- sim.gRoeMetz.config()
-# Simulate an MRMC ROC data set
-dFrame.imrmc <- sim.gRoeMetz(config)
-# Analyze the MRMC ROC data
-result <- doIMRMC(dFrame.imrmc)
-}

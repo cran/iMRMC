@@ -12,10 +12,3 @@ dFrame.imrmc [data.frame] Please refer to the description of the simRoeMetz retu
 \description{
 Simulates a sample MRMC ROC experiment
 }
-\examples{
-# Simulate a sample MRMC ROC data set
-dFrame.imrmc <- simRoeMetz.example()
-# Analyze the MRMC ROC data
-result <- doIMRMC(dFrame.imrmc)
-
-}

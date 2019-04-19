@@ -2,7 +2,7 @@
 % Please edit documentation in R/simMRMC.R
 \name{simMRMC}
 \alias{simMRMC}
-\title{Simulate an MRMC data set}
+\title{Simulate an MRMC data set ####}
 \usage{
 simMRMC(simMRMC.config)
 }
@@ -46,12 +46,4 @@ normally distributed independent random effects corresponding to readers,
 cases, and an interaction between the two.
 
 L.rc = mu + readerEffect.r + caseEffect.c + readerXcaseEffect.rc
-}
-\examples{
-# Create a sample configuration object
-config <- sim.gRoeMetz.config()
-# Simulate an MRMC ROC data set
-dFrame.imrmc <- sim.gRoeMetz(config)
-# Analyze the MRMC ROC data
-result <- doIMRMC(dFrame.imrmc)
 }

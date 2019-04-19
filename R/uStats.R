@@ -34,7 +34,7 @@
 #'
 #' Please refer to the tests/testthat folder of the package for examples using these functions.
 #'
-#' @name uStat11.jointD
+#' @name uStat11
 #'
 #' @param df.input
 #' Data frame of observations, one per row. Columns identify random effects, fixed effects,
@@ -130,12 +130,16 @@
 #' print(result.jointD.identity[1:2])
 
 uStat11.jointD <- function(
-  df.input,
-  keyColumns = c("readerID", "caseID", "modalityID", "score"),
-  modalitiesToCompare = c("modalityA", "modalityB"),
-  kernelFlag = 1) {
+  df.input, modalitiesToCompare, kernelFlag = 1,
+  keyColumns = c("readerID", "caseID", "modalityID", "score")
+  ) {
 
   if (kernelFlag == 1) {
+
+    if (length(modalitiesToCompare) != 2) {
+      print(paste("length(modalitiesToCompare) =", length(modalitiesToCompare)))
+      stop("ERROR: modalitiesToCompare should have 2 elements.")
+    }
 
     CbyR.identity <- uStat11.identity(
       df.input,
@@ -150,6 +154,11 @@ uStat11.jointD <- function(
 
   } else if (
     kernelFlag == 2) {
+
+    if (length(modalitiesToCompare) != 4) {
+      print(paste("length(modalitiesToCompare) =", length(modalitiesToCompare)))
+      stop("ERROR: modalities to compare should have 4 elements.")
+    }
 
     CbyR.diff <- uStat11.diff(
       df.input,
@@ -292,6 +301,7 @@ uStat11.jointD <- function(
   var <- c(var.A, var.B, var.AminusB)
   names(var) <- desc
   var.1obs <- moments$c1r1 - moments$c0r0
+  var.1obs[3] <- var.1obs[1] + var.1obs[2] - 2 * var.1obs[3]
   names(var.1obs) <- desc
   nCperR <- data.frame(sumiD.A, sumiD.B)
   names(nCperR) <- desc[1:2]
@@ -323,15 +333,19 @@ uStat11.jointD <- function(
 #'
 #' @export
 #'
-#' @rdname uStat11.jointD
+#' @rdname uStat11
 uStat11.conditionalD <- function(
-  df.input,
-  keyColumns = c("readerID", "caseID", "modalityID", "score"),
-  modalitiesToCompare = c("modalityA", "modalityB"),
-  kernelFlag = 1
+  df.input, modalitiesToCompare, kernelFlag = 1,
+  keyColumns = c("readerID", "caseID", "modalityID", "score")
 ) {
 
+  # Initialize kernel and design matrices ####
   if (kernelFlag == 1) {
+
+    if (length(modalitiesToCompare) != 2) {
+      print(paste("length(modalitiesToCompare) =", length(modalitiesToCompare)))
+      stop("ERROR: modalitiesToCompare should have 2 elements.")
+    }
 
     CbyR.identity <- uStat11.identity(
       df.input,
@@ -347,6 +361,11 @@ uStat11.conditionalD <- function(
   } else if (
     kernelFlag == 2) {
 
+    if (length(modalitiesToCompare) != 4) {
+      print(paste("length(modalitiesToCompare) =", length(modalitiesToCompare)))
+      stop("ERROR: modalities to compare should have 4 elements.")
+    }
+
     CbyR.diff <- uStat11.diff(
       df.input,
       keyColumns = keyColumns,
@@ -360,14 +379,16 @@ uStat11.conditionalD <- function(
 
   }
 
+  # Determine the number of cases per reader
+  sumiD.A <- colSums(design.A)
+  sumiD.B <- colSums(design.B)
+
   nC <- nrow(design.A)
   nR <- ncol(design.A)
 
   # Estimate the percent correct for each reader and modality
   sumiS.A <- colSums(kernel.A)
   sumiS.B <- colSums(kernel.B)
-  sumiD.A <- colSums(design.A)
-  sumiD.B <- colSums(design.B)
 
   meanPerR <- data.frame(sumiS.A / sumiD.A, sumiS.B / sumiD.B)
   names(meanPerR) <- c(desc[1], desc[2])
@@ -580,6 +601,7 @@ uStat11.conditionalD <- function(
   var <- c(var.A, var.B, var.AminusB)
   names(var) <- desc
   var.1obs <- moments$c1r1 - moments$c0r0
+  var.1obs[3] <- var.1obs[1] + var.1obs[2] - 2 * var.1obs[3]
   names(var.1obs) <- desc
   nCperR <- data.frame(sumiD.A, sumiD.B)
   names(nCperR) <- desc[1:2]
@@ -620,9 +642,8 @@ uStat11.conditionalD <- function(
 # @export
 #'
 uStat11.identity <- function(
-  df.input,
-  keyColumns = c("readerID", "caseID", "modalityID", "score"),
-  modalitiesToCompare = c("modalityA", "modalityB")
+  df.input, modalitiesToCompare,
+  keyColumns = c("readerID", "caseID", "modalityID", "score")
 ) {
 
   # Structure the data frame: one row for each observation
@@ -661,10 +682,10 @@ uStat11.identity <- function(
   design.B[index] <- 1
 
   return(list(
-    kernel.A = scores.A,
     design.A = design.A,
-    kernel.B = scores.B,
-    design.B = design.B
+    design.B = design.B,
+    kernel.A = scores.A * design.A,
+    kernel.B = scores.B * design.B
   ))
 }
 
@@ -679,9 +700,8 @@ uStat11.identity <- function(
 #' @param modalitiesToCompare The factors identifying the modalities to compare
 #'
 uStat11.diff <- function(
-  df.input,
-  keyColumns = c("readerID", "caseID", "modalityID", "score"),
-  modalitiesToCompare = c("modalityA", "modalityB", "modalityA", "modalityB")
+  df.input, modalitiesToCompare,
+  keyColumns = c("readerID", "caseID", "modalityID", "score")
 ) {
 
   # Structure the data frame: one row for each observation
@@ -701,7 +721,7 @@ uStat11.diff <- function(
   readers <- levels(df$readerID)
   nReaders <- nlevels(df$readerID)
 
-  # Determine readers involved in the comparisons
+  # Determine cases involved in the comparisons
   cases <- levels(df$caseID)
   nCases <- nlevels(df$caseID)
 
@@ -732,10 +752,10 @@ uStat11.diff <- function(
   design.D[index] <- 1
 
   # Declare and initialize the kernel results
-  kernel.AB <- scores.A - scores.B
   design.AB <- design.A * design.B
-  kernel.CD <- scores.C - scores.D
   design.CD <- design.C * design.D
+  kernel.AB <- (scores.A - scores.B) * design.AB
+  kernel.CD <- (scores.C - scores.D) * design.CD
 
   return(list(
     kernel.AB = kernel.AB,
