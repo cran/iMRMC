@@ -1,7 +1,8 @@
 # Initialize the l'Ecuyer random number generator ####
 #' @title Initialize the l'Ecuyer random number generator
 #'
-#' @description See the documentation for the parallel package
+#' @description See the documentation for the parallel package.
+#' If you require backwards compatibility, please run \code{RNGversion("3.5.0")}.
 #'
 #' @param seed This determines the position in each stream
 #' @param stream This determines the stream
@@ -15,12 +16,8 @@
 # @examples
 init.lecuyerRNG <- function(seed = 1, stream = 2){
 
-  # Set RNGversion
-  suppressMessages(RNGversion("3.5.0"))
-  
   # Set the random number generator
   RNGkind("L'Ecuyer-CMRG")
-  
   
   # Set the seed
   set.seed(seed)
@@ -38,7 +35,7 @@ init.lecuyerRNG <- function(seed = 1, stream = 2){
 }
 
 # Simulate an MRMC data set ####
-#' Simulate an MRMC data set ####
+#' Simulate an MRMC data set
 #'
 #' @description
 #' This program simulates observations from one set of readers scoring one set of cases.
@@ -196,7 +193,7 @@ simMRMC <- function(simMRMC.config) {
 #'       \item var_rc.Aneg: [num] variance of random reader by case effect
 #'       \item var_r.Apos: [num] variance of random reader effect
 #'       \item var_c.Apos: [num] variance of random case effect
-#'       \item var_rc.Apos: [num] variance of randome reader by case effect
+#'       \item var_rc.Apos: [num] variance of random reader by case effect
 #'   }
 #'   \item There are six random effects that are specific to modality B
 #'     \itemize{
@@ -205,7 +202,7 @@ simMRMC <- function(simMRMC.config) {
 #'       \item var_rc.Bneg: [num] variance of random reader by case effect
 #'       \item var_r.Bpos: [num] variance of random reader effect
 #'       \item var_c.Bpos: [num] variance of random case effect
-#'       \item var_rc.Bpos: [num] variance of randome reader by case effect
+#'       \item var_rc.Bpos: [num] variance of random reader by case effect
 #'   }
 #' }
 #'
@@ -552,7 +549,7 @@ simRoeMetz.example <- function() {
 #'       \item var_rc.Aneg: [num] variance of random reader by case effect
 #'       \item var_r.Apos: [num] variance of random reader effect
 #'       \item var_c.Apos: [num] variance of random case effect
-#'       \item var_rc.Apos: [num] variance of randome reader by case effect
+#'       \item var_rc.Apos: [num] variance of random reader by case effect
 #'   }
 #'   \item There are six random effects that are specific to modality B
 #'     \itemize{
@@ -561,7 +558,7 @@ simRoeMetz.example <- function() {
 #'       \item var_rc.Bneg: [num] variance of random reader by case effect
 #'       \item var_r.Bpos: [num] variance of random reader effect
 #'       \item var_c.Bpos: [num] variance of random case effect
-#'       \item var_rc.Bpos: [num] variance of randome reader by case effect
+#'       \item var_rc.Bpos: [num] variance of random reader by case effect
 #'   }
 #' }
 #' 

@@ -4,8 +4,11 @@
 \alias{uStat11.diff}
 \title{Create the kernel and design matrices for uStat11}
 \usage{
-uStat11.diff(df.input, modalitiesToCompare, keyColumns = c("readerID",
-  "caseID", "modalityID", "score"))
+uStat11.diff(
+  df.input,
+  modalitiesToCompare,
+  keyColumns = c("readerID", "caseID", "modalityID", "score")
+)
 }
 \arguments{
 \item{df.input}{Data frame of observations, one per row. Columns also identify random and fixed effects.}

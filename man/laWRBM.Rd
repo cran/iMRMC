@@ -4,8 +4,11 @@
 \alias{laWRBM}
 \title{MRMC analysis of within-reader between-modality limits of agreement}
 \usage{
-laWRBM(df, modalitiesToCompare, keyColumns = c("readerID", "caseID",
-  "modalityID", "score"))
+laWRBM(
+  df,
+  modalitiesToCompare,
+  keyColumns = c("readerID", "caseID", "modalityID", "score")
+)
 }
 \arguments{
 \item{df}{Data frame of observations, one per row. Columns identify random effects, fixed effects,

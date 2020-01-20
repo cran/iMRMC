@@ -4,9 +4,12 @@
 \alias{extractPairedComparisonsWRBM}
 \title{Extract within-reader between-modality pairs of scores}
 \usage{
-extractPairedComparisonsWRBM(data0, modalities = "testA",
-  keyColumns = list(readerID = "readerID", caseID = "caseID", modalityID
-  = "modalityID", score = "score"))
+extractPairedComparisonsWRBM(
+  data0,
+  modalities = "testA",
+  keyColumns = list(readerID = "readerID", caseID = "caseID", modalityID = "modalityID",
+    score = "score")
+)
 }
 \arguments{
 \item{data0}{This data frame includes columns for readerID, caseID, modalityID, score.}
@@ -22,7 +25,7 @@ of the data frame to be used for the analysis.
 A data frame of all paired observations.
   Each observation comes from a one reader evaluating a case in two modalities
   The first column corresponds to one reader evaluating the case in testA.
-  The second column corresonds to the same reader evaluating the case in testB.
+  The second column corresponds to the same reader evaluating the case in testB.
 }
 \description{
 Extract within-reader between-modality pairs of scores

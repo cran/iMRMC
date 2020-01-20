@@ -4,9 +4,12 @@
 \alias{createIMRMCdf}
 \title{Convert a data frame with all needed factors to doIMRMC formatted data frame}
 \usage{
-createIMRMCdf(dFrame, keyColumns = list(readerID = "readerID", caseID =
-  "caseID", modalityID = "modalityID", score = "score", truth = "truth"),
-  truePositiveFactor = "cancer")
+createIMRMCdf(
+  dFrame,
+  keyColumns = list(readerID = "readerID", caseID = "caseID", modalityID = "modalityID",
+    score = "score", truth = "truth"),
+  truePositiveFactor = "cancer"
+)
 }
 \arguments{
 \item{dFrame}{This data frame includes columns for readerID, caseID, modalityID, score, and truth.

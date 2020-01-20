@@ -4,8 +4,16 @@
 \alias{sim.gRoeMetz.config}
 \title{Create a configuration object for the sim.gRoeMetz program}
 \usage{
-sim.gRoeMetz.config(nR = 5, nC.neg = 40, nC.pos = 40, mu.neg = 0,
-  mu.pos = 1, var_r = 0.03, var_c = 0.3, var_rc = 0.2)
+sim.gRoeMetz.config(
+  nR = 5,
+  nC.neg = 40,
+  nC.pos = 40,
+  mu.neg = 0,
+  mu.pos = 1,
+  var_r = 0.03,
+  var_c = 0.3,
+  var_rc = 0.2
+)
 }
 \arguments{
 \item{nR}{Number of readers (default = 5)}

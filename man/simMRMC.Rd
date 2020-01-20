@@ -2,7 +2,7 @@
 % Please edit documentation in R/simMRMC.R
 \name{simMRMC}
 \alias{simMRMC}
-\title{Simulate an MRMC data set ####}
+\title{Simulate an MRMC data set}
 \usage{
 simMRMC(simMRMC.config)
 }

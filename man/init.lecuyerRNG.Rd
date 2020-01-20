@@ -15,5 +15,6 @@ init.lecuyerRNG(seed = 1, stream = 2)
 Nothing
 }
 \description{
-See the documentation for the parallel package
+See the documentation for the parallel package.
+If you require backwards compatibility, please run \code{RNGversion("3.5.0")}.
 }

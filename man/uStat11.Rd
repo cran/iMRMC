@@ -6,11 +6,19 @@
 \alias{uStat11.conditionalD}
 \title{Analysis of U-statistics degree 1,1}
 \usage{
-uStat11.jointD(df.input, modalitiesToCompare, kernelFlag = 1,
-  keyColumns = c("readerID", "caseID", "modalityID", "score"))
+uStat11.jointD(
+  df.input,
+  modalitiesToCompare,
+  kernelFlag = 1,
+  keyColumns = c("readerID", "caseID", "modalityID", "score")
+)
 
-uStat11.conditionalD(df.input, modalitiesToCompare, kernelFlag = 1,
-  keyColumns = c("readerID", "caseID", "modalityID", "score"))
+uStat11.conditionalD(
+  df.input,
+  modalitiesToCompare,
+  kernelFlag = 1,
+  keyColumns = c("readerID", "caseID", "modalityID", "score")
+)
 }
 \arguments{
 \item{df.input}{Data frame of observations, one per row. Columns identify random effects, fixed effects,
@@ -129,7 +137,7 @@ result.jointD.identity <- uStat11.jointD(
   keyColumns = c("readerID", "caseID", "modalityID", "score"),
   modalitiesToCompare = c("testA", "testB"))
 
-cat("\\n")
-cat("uStat11.jointD.identity \\n")
+cat("\n")
+cat("uStat11.jointD.identity \n")
 print(result.jointD.identity[1:2])
 }
