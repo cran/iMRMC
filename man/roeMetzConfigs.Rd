@@ -44,7 +44,7 @@ The columns of this data frame are as follows
       \item var_rc.Aneg: [num] variance of random reader by case effect
       \item var_r.Apos: [num] variance of random reader effect
       \item var_c.Apos: [num] variance of random case effect
-      \item var_rc.Apos: [num] variance of random reader by case effect
+      \item var_rc.Apos: [num] variance of randome reader by case effect
   }
   \item There are six random effects that are specific to modality B
     \itemize{
@@ -53,7 +53,7 @@ The columns of this data frame are as follows
       \item var_rc.Bneg: [num] variance of random reader by case effect
       \item var_r.Bpos: [num] variance of random reader effect
       \item var_c.Bpos: [num] variance of random case effect
-      \item var_rc.Bpos: [num] variance of random reader by case effect
+      \item var_rc.Bpos: [num] variance of randome reader by case effect
   }
 }
 }

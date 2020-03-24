@@ -27,7 +27,7 @@ two MRMC data frame formats. These are the formats:
 \describe{
   \item{matrixMode}{
     For this format, each row contains all the information for a case, 
-    including the reader study result for several readers, ground truth and other information as separate columns.
+    including the reader study result for several readers, ground truth and other information as seperate columns.
     This mode can only hold data from one modality.
   }
   \item{listMode}{

@@ -125,7 +125,8 @@ simMRMC <- function(simMRMC.config) {
     readerID = readerID,
     caseID = caseID,
     modalityID = modalityID,
-    score = L_mu + L_cases + L_readers + L_reader.case
+    score = L_mu + L_cases + L_readers + L_reader.case,
+    stringsAsFactors = TRUE
   )
 
 }
@@ -193,7 +194,7 @@ simMRMC <- function(simMRMC.config) {
 #'       \item var_rc.Aneg: [num] variance of random reader by case effect
 #'       \item var_r.Apos: [num] variance of random reader effect
 #'       \item var_c.Apos: [num] variance of random case effect
-#'       \item var_rc.Apos: [num] variance of random reader by case effect
+#'       \item var_rc.Apos: [num] variance of randome reader by case effect
 #'   }
 #'   \item There are six random effects that are specific to modality B
 #'     \itemize{
@@ -202,7 +203,7 @@ simMRMC <- function(simMRMC.config) {
 #'       \item var_rc.Bneg: [num] variance of random reader by case effect
 #'       \item var_r.Bpos: [num] variance of random reader effect
 #'       \item var_c.Bpos: [num] variance of random case effect
-#'       \item var_rc.Bpos: [num] variance of random reader by case effect
+#'       \item var_rc.Bpos: [num] variance of randome reader by case effect
 #'   }
 #' }
 #'
@@ -256,7 +257,8 @@ sim.gRoeMetz <- function(config) {
     readerID = rep("-1", nC.neg + nC.pos),
     caseID = c(as.character(caseIDs.neg), as.character(caseIDs.pos)),
     modalityID = rep("truth", nC.neg + nC.pos),
-    score = c(rep(0, nC.neg), rep(1, nC.pos))
+    score = c(rep(0, nC.neg), rep(1, nC.pos)),
+    stringsAsFactors = TRUE
   )
 
   # Simulate the modality independent random effects, negative cases
@@ -549,7 +551,7 @@ simRoeMetz.example <- function() {
 #'       \item var_rc.Aneg: [num] variance of random reader by case effect
 #'       \item var_r.Apos: [num] variance of random reader effect
 #'       \item var_c.Apos: [num] variance of random case effect
-#'       \item var_rc.Apos: [num] variance of random reader by case effect
+#'       \item var_rc.Apos: [num] variance of randome reader by case effect
 #'   }
 #'   \item There are six random effects that are specific to modality B
 #'     \itemize{
@@ -558,7 +560,7 @@ simRoeMetz.example <- function() {
 #'       \item var_rc.Bneg: [num] variance of random reader by case effect
 #'       \item var_r.Bpos: [num] variance of random reader effect
 #'       \item var_c.Bpos: [num] variance of random case effect
-#'       \item var_rc.Bpos: [num] variance of random reader by case effect
+#'       \item var_rc.Bpos: [num] variance of randome reader by case effect
 #'   }
 #' }
 #' 
