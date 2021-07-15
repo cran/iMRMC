@@ -65,7 +65,7 @@ dFrame.imrmc   [data.frame] with (nC.neg + nC.pos)*(nR+1) rows including
 }
 
 Note that the first nC.neg + nC.pos rows specify the truth labels for each case.
-For these rows, the readerID must be "truth" or "-1"
+For these rows, the readerID must be "truth"
 and the score must be 0 for negative cases and 1 for postive cases.
 }
 \description{

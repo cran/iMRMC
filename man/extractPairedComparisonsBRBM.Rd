@@ -7,8 +7,8 @@
 extractPairedComparisonsBRBM(
   data0,
   modalities = c("testA", "testB"),
-  keyColumns = list(readerID = "readerID", caseID = "caseID", modalityID = "modalityID",
-    score = "score")
+  keyColumns = list(readerID = "readerID", caseID = "caseID", modalityID =
+    "modalityID", score = "score")
 )
 }
 \arguments{

@@ -11,7 +11,7 @@ getBRBM(mcsData, modality.X, modality.Y)
 
 \item{modality.X}{The name of one modality}
 
-\item{modality.Y}{The name of one modality. This should be different from modality.X}
+\item{modality.Y}{The name of one modality.}
 }
 \value{
 The result of merging the modality.X and modality.Y subsets of mcsData by caseID
@@ -19,4 +19,7 @@ The result of merging the modality.X and modality.Y subsets of mcsData by caseID
 }
 \description{
 Get between-reader, between-modality paired data from an MRMC data file
+}
+\details{
+If modality.Y = modality.X, then the data would be between-reader, within-modality (BRWM).
 }

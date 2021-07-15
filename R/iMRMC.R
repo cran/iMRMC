@@ -29,10 +29,10 @@
 #'
 #' @param data This data.frame contains the following variables:
 #' \itemize{
-#'   \item \code{readerID} [Factor] with levels like "reader1", "reader2", ...
-#'   \item \code{caseID} [Factor] with levels like "case1", "case2", ...
-#'   \item \code{modalityID} [Factor] with levels like "modality1", "modality2", ...
-#'   \item \code{score} [num] reader score
+#'   \item \code{readerID} Factor with levels like "reader1", "reader2", ...
+#'   \item \code{caseID} Factor with levels like "case1", "case2", ...
+#'   \item \code{modalityID} Factor with levels like "modality1", "modality2", ...
+#'   \item \code{score} num = reader score
 #' }
 #'                      
 #' Each row of this data frame corresponds to an observation.
@@ -64,16 +64,16 @@
 #'            Here is a quick summary:
 #' \itemize{
 #'   \item {\code{perReader} 
-#'   [data.frame] this data frame contains the performance results for each reader.
+#'   data.frame containing the performance results for each reader.
 #'              Key variables of this data frame are AUCA, AUCB, AUCAminusAUCB and the corresponding
 #'              variances, confidence intervals, degrees of freedom and p-values.}
 #'   \item {\code{Ustat}
-#'   [data.frame] this data frame contains the reader-average performance results.
+#'   data.frame containing the reader-average performance results.
 #'              The analysis results are based on U-statistics and the papers listed above.
 #'              Key variables of this data frame are AUCA, AUCB, AUCAminusAUCB and the corresponding
 #'              variances, confidence intervals, degrees of freedom and p-values.}
 #'   \item {\code{MLEstat}
-#'   [data.frame] this data frame contains the reader-average performance results.
+#'   data.frame containing the reader-average performance results.
 #'              The analysis results are based on V-statistics, which approximates the true distribution with
 #'              the empirical distribution. The empirical distribution equals the nonparametric MLE
 #'              estimate of the true distribution, which is also equivalent to the ideal bootstrap estimate.
@@ -82,7 +82,7 @@
 #'              variances, confidence intervals, degrees of freedom and p-values.
 #'   }
 #'   \item {\code{ROC}
-#'   [list] each object of this list is an object containing an ROC curve.
+#'   list containing ROC curves
 #'              There is an ROC curve for every combination of reader and modality.
 #'              For every modality, there are also four average ROC curves. These are discussed in
 #'                Chen2014_Br-J-Radiol_v87p20140016.
@@ -91,7 +91,7 @@
 #'                The vertical average averages the reader specific ROC curves along x = b for b in (0,1).
 #'                The pooled average ignores readerID and pools all the scores together to create one ROC curve.}
 #'   \item {\code{varDecomp}
-#'   [list] the objects of this list are different decompositions of the total variance.
+#'   list containing different decompositions of the total variance.
 #'              Please refer to Gallas2009_Commun-Stat-A-Theor_v38p2586 (framework paper).
 #'              The different decompositions are BCK, BDG, DBM, MS, OR.
 #'   }
@@ -116,31 +116,55 @@ doIMRMC <- function(
   iMRMCjarFullPath = NULL,
   stripDatesForTests = FALSE){
 
-  if (is.null(workDir)) {
-    workDir <- normalizePath(tempdir())
+  # If workDir is not specified, it will be the R temp directory.
+  # If workDir is specified, create it.
+  if (is.null(workDir))
+    workDir <- normalizePath(tempdir(), winslash = "/")
+  else
+    dir.create(workDir, showWarnings = FALSE)
+  
+  # The inputFile will hold the data for the java program
+  inputFile <- file.path(workDir, "input.imrmc")
+  
+  # Check that data is provided
+  if (is.null(data) & is.null(fileName)) {
+    stop("You have not provided an input data frame or an input file.")
+  }
+  # Check that data is not provided twice.
+  if (!is.null(data) & !is.null(fileName)) {
+    stop("You cannot provide an input data frame AND an input file.")
+  }
+  
+  # If fileName is specified make sure it exists.
+  # Copy the fileName to the inputFile in the workDir.
+  if (!is.null(fileName)) {
+    if (!file.exists(fileName)) {
+      print(paste("fileName = ", fileName))
+      stop("The full-path fileName provided does not exist.")
+    } 
+    if (fileName == inputFile) {
+      print(paste("fileName = ", fileName))
+      stop("fileName equals the name of the temp inputFile. This is not allowed.")
+    } 
+    file.copy(fileName, inputFile)
   }
 
-  if (is.null(data)) {
-    if (is.null(fileName)) {
-      stop("ERROR: You have not provided an input data frame or an input file.")
-    } else {
-      flagWriteFile <- FALSE
-    }
-  } else {
-    if (!is.null(fileName)) {
-      stop("ERROR: You cannot provide and input data frame AND an input file.")
-    }
+  # Check the input data and write it to the inputFile in the workDir  
+  if (!is.null(data)) {
 
-    flagWriteFile <- TRUE
-    fileName <- file.path(workDir, "input.imrmc")
-
-    # Write data frame to iMRMC input file
-    writeLines("BEGIN DATA:", con = fileName)
-    utils::write.table(data, fileName,
+    # Check that the input data has key columns: readerID, caseID, modalityID, score
+    if (length(setdiff(c("readerID", "caseID", "modalityID", "score"), names(data)))) {
+      stop("The data frame does not include the key columns: readerID, caseID, modalityID, score.")
+    }
+    
+    # Write data frame to the inputFile
+    writeLines("BEGIN DATA:", con = inputFile)
+    utils::write.table(data[ , c("readerID", "caseID", "modalityID", "score")], inputFile,
                 quote = FALSE, row.names = FALSE, col.names = FALSE,
                 append = TRUE, sep = ", ")
 
   }
+  
   if (is.null(iMRMCjarFullPath)) {
     iMRMCjar <- "iMRMC-v4.0.3.jar"
     pkgPath <- path.package("iMRMC", quiet = FALSE)
@@ -155,32 +179,44 @@ doIMRMC <- function(
   
   # Run iMRMC
   desc <- tryCatch(
-    
+
     system2(
       "java",
-      args = c("-jar",
-               iMRMCjarFullPath,
-               fileName,
-               file.path(workDir, "imrmcDir")),
-      stdout = FALSE, stderr = TRUE),
-    
+      args = c(
+        "-jar",
+        iMRMCjarFullPath,
+        inputFile,
+        file.path(workDir, "imrmcDir")
+      ),
+      stdout = TRUE, stderr = TRUE
+    ),
+
     warning = function(w) {
       cat("do_IMRMC WARNING\n")
       warning(w)
     },
+    
     error = function(e) {
       cat("\ndoIMRMC ERROR\n")
       cat("One possible reason is that you don't have java.\n")
       cat("This software requires Java JDK 1.7 or higher.\n")
       stop(e)
     }
-
+    
   )
 
+  if (!file.exists(file.path(workDir, "imrmcDir", "AUCperReader.csv"))) {
+    cat(desc, sep = "\n")
+    stop()
+  }
+
   # Retrieve the iMRMC results
-  perReader <- utils::read.csv(file.path(workDir, "imrmcDir", "AUCperReader.csv"))
-  Ustat <- utils::read.csv(file.path(workDir, "imrmcDir", "statAnalysis.csv"))
-  MLEstat <- utils::read.csv(file.path(workDir, "imrmcDir", "statAnalysisMLE.csv"))
+  perReader <- utils::read.csv(file.path(workDir, "imrmcDir", "AUCperReader.csv"),
+                               stringsAsFactors = TRUE) 
+  Ustat <- utils::read.csv(file.path(workDir, "imrmcDir", "statAnalysis.csv"),
+                           stringsAsFactors = TRUE)
+  MLEstat <- utils::read.csv(file.path(workDir, "imrmcDir", "statAnalysisMLE.csv"),
+                             stringsAsFactors = TRUE)
   ROCraw <- utils::read.csv(file.path(workDir, "imrmcDir", "ROCcurves.csv"),
                      header = FALSE, row.names = NULL, skip = 1)
 
@@ -211,13 +247,9 @@ doIMRMC <- function(
   }
 
   # Delete the content written to disk
-  if (workDir == normalizePath(tempdir())){
+  if (workDir == normalizePath(tempdir(), winslash = "/")) {
     unlink(file.path(workDir, "imrmcDir"), recursive = TRUE)
-
-    if (flagWriteFile) {
-      unlink(fileName)
-    }
-
+    unlink(inputFile)
   }
 
   varDecomp <- list(
