@@ -32,7 +32,7 @@
 #'   \item \code{readerID} Factor with levels like "reader1", "reader2", ...
 #'   \item \code{caseID} Factor with levels like "case1", "case2", ...
 #'   \item \code{modalityID} Factor with levels like "modality1", "modality2", ...
-#'   \item \code{score} num = reader score
+#'   \item \code{score} num reader score
 #' }
 #'                      
 #' Each row of this data frame corresponds to an observation.
@@ -184,9 +184,9 @@ doIMRMC <- function(
       "java",
       args = c(
         "-jar",
-        iMRMCjarFullPath,
-        inputFile,
-        file.path(workDir, "imrmcDir")
+        paste0('"', iMRMCjarFullPath, '"'),
+        paste0('"', inputFile, '"'),
+        paste0('"', file.path(workDir, "imrmcDir"), '"')
       ),
       stdout = TRUE, stderr = TRUE
     ),

@@ -1,7 +1,7 @@
-9ddaea5308ed6e9618ae0eaaa9c7dc4a *DESCRIPTION
+7c5f9a2aded5e5127c9f1195dd6854d8 *DESCRIPTION
 b3c0f08303d3467de8da854a69e16002 *NAMESPACE
 ed0c881ee35ca2421f7019ddc15387ed *NEWS.md
-d1a6dcd45563ca1693ffa0d8f4adc682 *R/iMRMC.R
+e00a88dc9e969485c08b7850cae6be5f *R/iMRMC.R
 664359e420a8ad9b747b1655ed11b28d *R/limitsOfAgreement.R
 624cfbad2e71626d883be177674be0c0 *R/simMRMC.R
 52a8d751a965d0d04f97c0f2c76319b7 *R/uStats.R
@@ -69,7 +69,7 @@ d2cc6e39de67c05d0ee2a12c0334e998 *inst/extra/man/undoIMRMCdf.html
 afc8b5b0ab024d12f5b516b1e551dfea *man/convertDFtoScoreMatrix.Rd
 fc8a33a53710a2fa16e0d1f72ed86585 *man/createGroups.Rd
 cc1f03dea7b761d72c92d3c0b86ec144 *man/createIMRMCdf.Rd
-d57b558bf48371016e0d48c52bfc2949 *man/doIMRMC.Rd
+1013c2e4be97f98ba326ffebfd8297e9 *man/doIMRMC.Rd
 90cfa76a61068b1c60c4085a9bb23aa6 *man/extractPairedComparisonsBRBM.Rd
 bcdb340d44de5a4877f575784ffd9d7c *man/extractPairedComparisonsWRBM.Rd
 c169bbc78dd95245651122841973b3e2 *man/getBRBM.Rd
