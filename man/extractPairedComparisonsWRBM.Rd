@@ -7,8 +7,8 @@
 extractPairedComparisonsWRBM(
   data0,
   modalities = "testA",
-  keyColumns = list(readerID = "readerID", caseID = "caseID", modalityID =
-    "modalityID", score = "score")
+  keyColumns = list(readerID = "readerID", caseID = "caseID", modalityID = "modalityID",
+    score = "score")
 )
 }
 \arguments{

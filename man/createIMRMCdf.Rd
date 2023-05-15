@@ -6,8 +6,8 @@
 \usage{
 createIMRMCdf(
   dFrame,
-  keyColumns = list(readerID = "readerID", caseID = "caseID", modalityID =
-    "modalityID", score = "score", truth = "truth"),
+  keyColumns = list(readerID = "readerID", caseID = "caseID", modalityID = "modalityID",
+    score = "score", truth = "truth"),
   truePositiveFactor = "cancer"
 )
 }

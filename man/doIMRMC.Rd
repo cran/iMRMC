@@ -99,7 +99,7 @@ the iMRMC engine, which writes the results to the local files system, it reads t
 the local file system, packs the analysis results into a list object, deletes the data and analysis results
 from the local file system, and returns the list object.
 
-This software requires Java JDK 1.7 or higher.
+This software requires Java(>=8).
 
 The examples took too long for CRAN to accept. So here is an example: 
 \preformatted{
