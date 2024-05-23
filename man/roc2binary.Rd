@@ -17,3 +17,14 @@ a list of two data frames (df.tpf and df.fpf) both formatted for doIMRMC
 \description{
 Convert ROC data formatted for doIMRMC to TPF and FPF data formatted for doIMRMC
 }
+\examples{
+# Create a sample configuration file
+config <- sim.gRoeMetz.config()
+# Simulate an MRMC ROC data set
+dFrame.imrmc <- sim.gRoeMetz(config)
+# Convert ROC MRMC data to TPF and FPF data frames
+result <- roc2binary(dFrame.imrmc, threshold = 0.9)
+# Analyze TPF data using doIMRMC
+tpf_result <- doIMRMC(result$df.tpf)
+# View(tpf_result$perReader)
+}

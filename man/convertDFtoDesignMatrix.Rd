@@ -19,7 +19,7 @@ Leaving the levels (dropFlag = FALSE) is useful if you need the entire score
 or design matrix when comparing or doing analyses with two modalities.}
 }
 \value{
-A matrix [nCases, nReaders] indicating which scores were reported for each reader and case
+A matrix that is \emph{nCases} by \emph{nReaders} indicating which scores were reported for each reader and case
 }
 \description{
 Convert an MRMC data frame to a design matrix, dropping readers or cases with no observations

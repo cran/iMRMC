@@ -7,7 +7,7 @@
 simRoeMetz.example()
 }
 \value{
-dFrame.imrmc [data.frame] Please refer to the description of the simRoeMetz return variable
+dFrame.imrmc [data.frame] Please refer to the description of the \code{\link{sim.gRoeMetz}} return variable
 }
 \description{
 Simulates a sample MRMC ROC experiment

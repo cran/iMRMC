@@ -2,20 +2,20 @@
 % Please edit documentation in R/limitsOfAgreement.R
 \name{getWRBM}
 \alias{getWRBM}
-\title{Get within-reader, between-modality paired data from an MRMC data file}
+\title{Get within-reader, between-modality paired data from an MRMC data frame}
 \usage{
-getWRBM(mcsData, modality.X, modality.Y)
+getWRBM(mrmcDF, modality.X, modality.Y)
 }
 \arguments{
-\item{mcsData}{A data frame with the following columns: readerID, caseID, modalityID, score}
+\item{mrmcDF}{A data frame with the following columns: readerID, caseID, modalityID, score}
 
 \item{modality.X}{The name of one modality}
 
 \item{modality.Y}{The name of one modality. This should be different from modality.X}
 }
 \value{
-The result of merging the modality.X and modality.Y subsets of mcsData by readerID and caseID
+The result of merging the modality.X and modality.Y subsets of mrmcDF by readerID and caseID
 }
 \description{
-Get within-reader, between-modality paired data from an MRMC data file
+Get within-reader, between-modality paired data from an MRMC data frame
 }

@@ -11,17 +11,7 @@ laBRBM(
 )
 }
 \arguments{
-\item{df}{Data frame of observations, one per row. Columns identify random effects, fixed effects,
-and the observation. Namely,
-\itemize{
-  \item \code{readerID:} The factor corresponding to the different readers in the study.
-    The readerID is treated as a random effect.
-  \item \code{caseID:} The factor corresponding to the different cases in the study.
-    The caseID is treated as a random effect.
-  \item \code{modalityID:} The factor corresponding to the different modalities in the study.
-    The modalityID is treated as a fixed effect.
-  \item \code{score:} The score given by the reader to the case for the modality indicated.
-}}
+\item{df}{an iMRMC formatted data frame, see \link{dfMRMC_example}}
 
 \item{modalitiesToCompare}{The factors identifying the modalities to compare.}
 

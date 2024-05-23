@@ -1,11 +1,11 @@
-#### doIMRMC function ####
+#### doIMRMC_java function ####
 #' MRMC analysis of the area under the ROC curve
 #'
-#' @description doIMRMC takes ROC data as a data frame and runs a multi-reader multi-case analysis
+#' @description doIMRMC_java takes ROC data as a data frame and runs a multi-reader multi-case analysis
 #' based on U-statistics as described in the following papers
 #' Gallas2006_Acad-Radiol_v13p353 (single-modality),
 #' Gallas2008_Neural-Networks_v21p387 (multiple modalities, arbitrary study designs),
-#' Gallas2009_Commun-Stat-A-Theor_v38p2586 (framework paper).
+#' Gallas2009_Commun-Stat-A-Theor_v38p2586 (framework paper). This function is deprecated, please use \code{\link{doIMRMC}} instead.
 #'
 #' @details
 #' In detail, this procedure reads the name of an input file from the local file system,
@@ -24,22 +24,11 @@
 #' # Simulate an MRMC ROC data set
 #' dFrame.imrmc <- sim.gRoeMetz(config)
 #' # Analyze the MRMC ROC data
-#' result <- doIMRMC(dFrame.imrmc)
+#' result <- doIMRMC_java(dFrame.imrmc)
 #' }
 #'
-#' @param data This data.frame contains the following variables:
-#' \itemize{
-#'   \item \code{readerID} Factor with levels like "reader1", "reader2", ...
-#'   \item \code{caseID} Factor with levels like "case1", "case2", ...
-#'   \item \code{modalityID} Factor with levels like "modality1", "modality2", ...
-#'   \item \code{score} num reader score
-#' }
-#'                      
-#' Each row of this data frame corresponds to an observation.
-#' For every caseID, there must be a row corresponding to the truth observation.
-#' The readerID for a truth observation is "truth".
-#' The modalityID for a truth observation is "truth".
-#' The score for a truth observation must be either 0 (signal-absent) or 1 (signal-present).
+#' @param data an iMRMC formatted data frame, see \link{dfMRMC_example}
+#' 
 #'
 #' @param fileName This character string identifies the location of an iMRMC input file.
 #'   The input file is identical to data except there is a free text section to start,
@@ -106,16 +95,20 @@
 # # Simulate an MRMC ROC data set
 # dFrame.imrmc <- sim.gRoeMetz(config)
 # # Analyze the MRMC ROC data
-# result <- doIMRMC(dFrame.imrmc)
+# result <- doIMRMC_java(dFrame.imrmc)
 #
 #
-doIMRMC <- function(
-  data = NULL,
-  fileName = NULL,
-  workDir = NULL,
-  iMRMCjarFullPath = NULL,
-  stripDatesForTests = FALSE){
-
+doIMRMC_java <- function(
+    data = NULL,
+    fileName = NULL,
+    workDir = NULL,
+    iMRMCjarFullPath = NULL,
+    stripDatesForTests = FALSE){
+  
+  # Signals that the function is going to be removed from pkg eventually
+  .Deprecated(new = "doIMRMC", msg = "This function uses Java and will be eventually defunct. 
+              The suggested `doIMRMC` function uses all R code.")
+  
   # If workDir is not specified, it will be the R temp directory.
   # If workDir is specified, create it.
   if (is.null(workDir))
@@ -148,10 +141,10 @@ doIMRMC <- function(
     } 
     file.copy(fileName, inputFile)
   }
-
+  
   # Check the input data and write it to the inputFile in the workDir  
   if (!is.null(data)) {
-
+    
     # Check that the input data has key columns: readerID, caseID, modalityID, score
     if (length(setdiff(c("readerID", "caseID", "modalityID", "score"), names(data)))) {
       stop("The data frame does not include the key columns: readerID, caseID, modalityID, score.")
@@ -160,16 +153,16 @@ doIMRMC <- function(
     # Write data frame to the inputFile
     writeLines("BEGIN DATA:", con = inputFile)
     utils::write.table(data[ , c("readerID", "caseID", "modalityID", "score")], inputFile,
-                quote = FALSE, row.names = FALSE, col.names = FALSE,
-                append = TRUE, sep = ", ")
-
+                       quote = FALSE, row.names = FALSE, col.names = FALSE,
+                       append = TRUE, sep = ", ")
+    
   }
   
   if (is.null(iMRMCjarFullPath)) {
     iMRMCjar <- "iMRMC-v4.0.3.jar"
     pkgPath <- path.package("iMRMC", quiet = FALSE)
     iMRMCjarFullPath <- file.path(pkgPath, "java", iMRMCjar)
-
+    
     # This check is necessary for testthat tests that run in some
     # virtual environment that is not like reality
     if (!file.exists(iMRMCjarFullPath)) {
@@ -179,7 +172,7 @@ doIMRMC <- function(
   
   # Run iMRMC
   desc <- tryCatch(
-
+    
     system2(
       "java",
       args = c(
@@ -190,26 +183,26 @@ doIMRMC <- function(
       ),
       stdout = TRUE, stderr = TRUE
     ),
-
+    
     warning = function(w) {
       cat("do_IMRMC WARNING\n")
       warning(w)
     },
     
     error = function(e) {
-      cat("\ndoIMRMC ERROR\n")
+      cat("\ndoIMRMC_java ERROR\n")
       cat("One possible reason is that you don't have java.\n")
       cat("This software requires Java(>=8).\n")
       stop(e)
     }
     
   )
-
+  
   if (!file.exists(file.path(workDir, "imrmcDir", "AUCperReader.csv"))) {
     cat(desc, sep = "\n")
     stop()
   }
-
+  
   # Retrieve the iMRMC results
   perReader <- utils::read.csv(file.path(workDir, "imrmcDir", "AUCperReader.csv"),
                                stringsAsFactors = TRUE) 
@@ -218,40 +211,40 @@ doIMRMC <- function(
   MLEstat <- utils::read.csv(file.path(workDir, "imrmcDir", "statAnalysisMLE.csv"),
                              stringsAsFactors = TRUE)
   ROCraw <- utils::read.csv(file.path(workDir, "imrmcDir", "ROCcurves.csv"),
-                     header = FALSE, row.names = NULL, skip = 1)
-
+                            header = FALSE, row.names = NULL, skip = 1)
+  
   BCK <- readVarDecomp(file.path(workDir, "imrmcDir", "BCKtable.csv"))
   BDG <- readVarDecomp(file.path(workDir, "imrmcDir", "BDGtable.csv"))
   DBM <- readVarDecomp(file.path(workDir, "imrmcDir", "DBMtable.csv"))
   MS <- readVarDecomp(file.path(workDir, "imrmcDir", "MStable.csv"))
   OR <- readVarDecomp(file.path(workDir, "imrmcDir", "ORtable.csv"))
-
+  
   ROC <- by(ROCraw, ROCraw[, 1], function(x) {
     list(desc = as.character(x[1,1]), n = as.numeric(x[1,2]),
          fpf = as.numeric(x[x[,3] == "FPF", 4:(3 + x[1,2])]),
          tpf = as.numeric(x[x[,3] == "TPF", 4:(3 + x[1,2])])
-      )
-
+    )
+    
   })
-
+  
   # If doing tests, strip out the data that could change (dates etc)
   if (stripDatesForTests) {
-
+    
     descDrop <- c("inputFile", "date", "iMRMCversion")
-
+    
     perReader <- perReader[ , !(names(perReader)) %in% descDrop]
     Ustat <- Ustat[ , !(names(Ustat)) %in% descDrop]
     MLEstat <- MLEstat[ , !(names(MLEstat)) %in% descDrop]
     ROC <- 0
-
+    
   }
-
+  
   # Delete the content written to disk
   if (workDir == normalizePath(tempdir(), winslash = "/")) {
     unlink(file.path(workDir, "imrmcDir"), recursive = TRUE)
     unlink(inputFile)
   }
-
+  
   varDecomp <- list(
     BCK = BCK,
     BDG = BDG,
@@ -259,7 +252,7 @@ doIMRMC <- function(
     MS = MS,
     OR = OR
   )
-
+  
   iMRMCoutput <- list(
     perReader = perReader,
     Ustat = Ustat,
@@ -267,55 +260,55 @@ doIMRMC <- function(
     ROC = ROC,
     varDecomp = varDecomp
   )
-
+  
 }
 
 getComponents <- function(df.varDecomp) {
-
+  
   nc <- ncol(df.varDecomp)
   result <- df.varDecomp[c(1, 3, 5), 5:nc]
   descA <- as.character(df.varDecomp$modalityA[1])
   descB <- as.character(df.varDecomp$modalityB[1])
   rownames(result) <- c(descA, descB, paste(descA, descB, sep = "."))
-
+  
   return(result)
-
+  
 }
 
 getCoefficients <- function(df.varDecomp) {
-
+  
   nc <- ncol(df.varDecomp)
   result <- df.varDecomp[c(2, 4, 6), 5:nc]
   descA <- as.character(df.varDecomp$modalityA[1])
   descB <- as.character(df.varDecomp$modalityB[1])
   rownames(result) <- c(descA, descB, paste(descA, descB, sep = "."))
-
+  
   return(result)
-
+  
 }
 
 readVarDecomp <- function(fileName) {
-
+  
   df.csv <- utils::read.csv(fileName, row.names = NULL)
-
+  
   df.csv <- split(df.csv, df.csv$UstatOrMLE)
   df.csv$Ustat <- split(df.csv$Ustat, list(df.csv$Ustat$modalityA, df.csv$Ustat$modalityB))
   df.csv$Ustat <- df.csv$Ustat[sapply(df.csv$Ustat, nrow) > 0]
   df.csv$MLE <- split(df.csv$MLE, list(df.csv$MLE$modalityA, df.csv$MLE$modalityB))
   df.csv$MLE <- df.csv$MLE[sapply(df.csv$MLE, nrow) > 0]
-
+  
   MLE.comp <- lapply(df.csv$MLE, getComponents)
   Ustat.comp <- lapply(df.csv$Ustat, getComponents)
-
+  
   MLE.coeff <- lapply(df.csv$MLE, getCoefficients)
   Ustat.coeff <- lapply(df.csv$Ustat, getCoefficients)
-
+  
   result <- list(
     MLE = list(comp = MLE.comp, coeff = MLE.coeff),
     Ustat = list(comp = Ustat.comp, coeff = Ustat.coeff)
   )
-
+  
   return(result)
-
+  
 }
 

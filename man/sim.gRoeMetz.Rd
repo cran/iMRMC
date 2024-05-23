@@ -11,62 +11,62 @@ sim.gRoeMetz(config)
 \itemize{
   \item Experiment labels and size
   \itemize{
-    \item modalityID.A: [chr] label modality A
-    \item modalityID.B: [chr] label modality B
-    \item nR: [num] number of readers
-    \item nC.neg: [num] number of signal-absent cases
-    \item nC.pos: [num] number of signal-present cases
+    \item modalityID.A: [character] label modality A
+    \item modalityID.B: [character] label modality B
+    \item nR: [numeric] number of readers
+    \item nC.neg: [numeric] number of signal-absent cases
+    \item nC.pos: [numeric] number of signal-present cases
   }
   \item There are six fixed effects:
   \itemize{
-    \item mu.neg: [num] signal-absent (neg, global mean)
-    \item mu.pos: [num] signal-present (pos, global mean)
-    \item mu.Aneg: [num] modality A signal-absent (Aneg, modality effect)
-    \item mu.Bneg: [num] modality B signal-absent (Bneg, modality effect)
-    \item mu.Apos: [num] modality A signal-present (Apos, modality effect)
-    \item mu.Bpos: [num] modality B signal-present (Bpos, modality effect)
+    \item mu.neg: [numeric] signal-absent (neg, global mean)
+    \item mu.pos: [numeric] signal-present (pos, global mean)
+    \item mu.Aneg: [numeric] modality A signal-absent (Aneg, modality effect)
+    \item mu.Bneg: [numeric] modality B signal-absent (Bneg, modality effect)
+    \item mu.Apos: [numeric] modality A signal-present (Apos, modality effect)
+    \item mu.Bpos: [numeric] modality B signal-present (Bpos, modality effect)
   }
   \item There are six random effects that are independent of modality
   \itemize{
-    \item var_r.neg: [num] variance of random reader effect
-    \item var_c.neg: [num] variance of random case effect
-    \item var_rc.neg: [num] variance of random reader by case effect
-    \item var_r.pos: [num] variance of random reader effect
-    \item var_c.pos: [num] variance of random case effect
-    \item var_rc.pos: [num] variance of random reader by case effect
+    \item var_r.neg: [numeric] variance of random reader effect
+    \item var_c.neg: [numeric] variance of random case effect
+    \item var_rc.neg: [numeric] variance of random reader by case effect
+    \item var_r.pos: [numeric] variance of random reader effect
+    \item var_c.pos: [numeric] variance of random case effect
+    \item var_rc.pos: [numeric] variance of random reader by case effect
   }
   \item There are six random effects that are specific to modality A
     \itemize{
-      \item var_r.Aneg: [num] variance of random reader effect
-      \item var_c.Aneg: [num] variance of random case effect
-      \item var_rc.Aneg: [num] variance of random reader by case effect
-      \item var_r.Apos: [num] variance of random reader effect
-      \item var_c.Apos: [num] variance of random case effect
-      \item var_rc.Apos: [num] variance of randome reader by case effect
+      \item var_r.Aneg: [numeric] variance of random reader effect
+      \item var_c.Aneg: [numeric] variance of random case effect
+      \item var_rc.Aneg: [numeric] variance of random reader by case effect
+      \item var_r.Apos: [numeric] variance of random reader effect
+      \item var_c.Apos: [numeric] variance of random case effect
+      \item var_rc.Apos: [numeric] variance of randome reader by case effect
   }
   \item There are six random effects that are specific to modality B
     \itemize{
-      \item var_r.Bneg: [num] variance of random reader effect
-      \item var_c.Bneg: [num] variance of random case effect
-      \item var_rc.Bneg: [num] variance of random reader by case effect
-      \item var_r.Bpos: [num] variance of random reader effect
-      \item var_c.Bpos: [num] variance of random case effect
-      \item var_rc.Bpos: [num] variance of randome reader by case effect
+      \item var_r.Bneg: [numeric] variance of random reader effect
+      \item var_c.Bneg: [numeric] variance of random case effect
+      \item var_rc.Bneg: [numeric] variance of random reader by case effect
+      \item var_r.Bpos: [numeric] variance of random reader effect
+      \item var_c.Bpos: [numeric] variance of random case effect
+      \item var_rc.Bpos: [numeric] variance of randome reader by case effect
   }
 }}
 }
 \value{
 dFrame.imrmc   [data.frame] with (nC.neg + nC.pos)*(nR+1) rows including
 \itemize{
-  \item readerID: [Factor] w/ nR levels "reader1", "reader2", ...
-  \item caseID: [Factor] w/ nC levels "case1", "case2", ...
-  \item modalityID: [Factor] w/ 1 level config$modalityID
-  \item score: [num] reader score
+  \item readerID: [factor] w/ nR levels "reader1", "reader2", ...
+  \item caseID: [factor] w/ nC levels "case1", "case2", ...
+  \item modalityID: [factor] w/ 1 level config$modalityID
+  \item score: [numeric] reader score
 }
 
 Note that the first nC.neg + nC.pos rows specify the truth labels for each case.
 For these rows, the readerID must be "truth"
-and the score must be 0 for negative cases and 1 for postive cases.
+and the score must be 0 for negative cases and 1 for positive cases.
 }
 \description{
 This procedure simulates an MRMC data set of an ROC experiment comparing two modalities.
@@ -74,8 +74,7 @@ It is based on Gallas2014_J-Med-Img_v1p031006, which generalizes of the model in
 Roe1997_Acad-Radiol_v4p298 and Roe1997_Acad-Radiol_v4p587. Specifically, it allows
 the variance components to depend on the truth and the modality. For the simpler
 Roe and Metz model, you can enter the smaller set of parameters into
-sim.gRoeMetz.config and get back the larger set of parameters and then
-used with this function.
+sim.gRoeMetz.config and it will return a larger set of parameters that can be used with this function.
 }
 \details{
 The simulation is a linear model with six fixed effects related to

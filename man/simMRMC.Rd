@@ -9,13 +9,13 @@ simMRMC(simMRMC.config)
 \arguments{
 \item{simMRMC.config}{[list] of simulation parameters:
 \itemize{
-  \item modalityID [chr] label modalityID
+  \item modalityID [character] label modalityID
   \item readerIDs  [factor] the ID of each reader
   \item caseIDs    [factor] the ID of each case
-  \item mu         [num] mean
-  \item var_r      [num] variance of random reader effect
-  \item var_c      [num] variance of random case effect
-  \item var_rc     [num] variance of random reader by case effect
+  \item mu         [numeric] mean
+  \item var_r      [numeric] variance of random reader effect
+  \item var_c      [numeric] variance of random case effect
+  \item var_rc     [numeric] variance of random reader by case effect
 }}
 }
 \value{
@@ -24,7 +24,7 @@ L [data.frame] with nC*nR rows of 4 variables
   \item L$modalityID   [factor] determined by input modalityID
   \item L$readerID     [factor] determined by input readerIDs
   \item L$caseID       [factor] determined by input caseIDs
-  \item L$score        [num]  R.r + C.c + RC.rc
+  \item L$score        [numeric]  R.r + C.c + RC.rc
   \itemize{
     \item r = 1,2,...,nR
     \item c = 1,2,...,nC

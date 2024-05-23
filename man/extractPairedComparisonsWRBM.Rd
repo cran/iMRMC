@@ -24,8 +24,8 @@ of the data frame to be used for the analysis.
 \value{
 A data frame of all paired observations.
   Each observation comes from a one reader evaluating a case in two modalities
-  The first column corresponds to one reader evaluating the case in testA.
-  The second column corresonds to the same reader evaluating the case in testB.
+  The first column corresponds to one reader evaluating the case in "testA".
+  The second column corresonds to the same reader evaluating the case in "testB".
 }
 \description{
 Extract within-reader between-modality pairs of scores

@@ -13,47 +13,47 @@ The columns of this data frame are as follows
 \itemize{
   \item Experiment labels and size
   \itemize{
-    \item modalityID.A: [chr] label modality A
-    \item modalityID.B: [chr] label modality B
-    \item nR: [num] number of readers
-    \item nC.neg: [num] number of signal-absent cases
-    \item nC.pos: [num] number of signal-present cases
+    \item modalityID.A: [character] label modality A
+    \item modalityID.B: [character] label modality B
+    \item nR: [numeric] number of readers
+    \item nC.neg: [numeric] number of signal-absent cases
+    \item nC.pos: [numeric] number of signal-present cases
   }
   \item There are six fixed effects:
   \itemize{
-    \item mu.neg: [num] signal-absent (neg, global mean)
-    \item mu.pos: [num] signal-present (pos, global mean)
-    \item mu.Aneg: [num] modality A signal-absent (Aneg, modality effect)
-    \item mu.Bneg: [num] modality B signal-absent (Bneg, modality effect)
-    \item mu.Apos: [num] modality A signal-present (Apos, modality effect)
-    \item mu.Bpos: [num] modality B signal-present (Bpos, modality effect)
+    \item mu.neg: [numeric] signal-absent (neg, global mean)
+    \item mu.pos: [numeric] signal-present (pos, global mean)
+    \item mu.Aneg: [numeric] modality A signal-absent (Aneg, modality effect)
+    \item mu.Bneg: [numeric] modality B signal-absent (Bneg, modality effect)
+    \item mu.Apos: [numeric] modality A signal-present (Apos, modality effect)
+    \item mu.Bpos: [numeric] modality B signal-present (Bpos, modality effect)
   }
   \item There are six random effects that are independent of modality
   \itemize{
-    \item var_r.neg: [num] variance of random reader effect
-    \item var_c.neg: [num] variance of random case effect
-    \item var_rc.neg: [num] variance of random reader by case effect
-    \item var_r.pos: [num] variance of random reader effect
-    \item var_c.pos: [num] variance of random case effect
-    \item var_rc.pos: [num] variance of random reader by case effect
+    \item var_r.neg: [numeric] variance of random reader effect
+    \item var_c.neg: [numeric] variance of random case effect
+    \item var_rc.neg: [numeric] variance of random reader by case effect
+    \item var_r.pos: [numeric] variance of random reader effect
+    \item var_c.pos: [numeric] variance of random case effect
+    \item var_rc.pos: [numeric] variance of random reader by case effect
   }
   \item There are six random effects that are specific to modality A
     \itemize{
-      \item var_r.Aneg: [num] variance of random reader effect
-      \item var_c.Aneg: [num] variance of random case effect
-      \item var_rc.Aneg: [num] variance of random reader by case effect
-      \item var_r.Apos: [num] variance of random reader effect
-      \item var_c.Apos: [num] variance of random case effect
-      \item var_rc.Apos: [num] variance of randome reader by case effect
+      \item var_r.Aneg: [numeric] variance of random reader effect
+      \item var_c.Aneg: [numeric] variance of random case effect
+      \item var_rc.Aneg: [numeric] variance of random reader by case effect
+      \item var_r.Apos: [numeric] variance of random reader effect
+      \item var_c.Apos: [numeric] variance of random case effect
+      \item var_rc.Apos: [numeric] variance of randome reader by case effect
   }
   \item There are six random effects that are specific to modality B
     \itemize{
-      \item var_r.Bneg: [num] variance of random reader effect
-      \item var_c.Bneg: [num] variance of random case effect
-      \item var_rc.Bneg: [num] variance of random reader by case effect
-      \item var_r.Bpos: [num] variance of random reader effect
-      \item var_c.Bpos: [num] variance of random case effect
-      \item var_rc.Bpos: [num] variance of randome reader by case effect
+      \item var_r.Bneg: [numeric] variance of random reader effect
+      \item var_c.Bneg: [numeric] variance of random case effect
+      \item var_rc.Bneg: [numeric] variance of random reader by case effect
+      \item var_r.Bpos: [numeric] variance of random reader effect
+      \item var_c.Bpos: [numeric] variance of random case effect
+      \item var_rc.Bpos: [numeric] variance of randome reader by case effect
   }
 }
 }

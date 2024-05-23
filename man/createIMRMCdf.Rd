@@ -21,7 +21,8 @@ list(readerID = "***", caseID = "***", modalityID = "***", score = "***", truth=
 \item{truePositiveFactor}{The true positive label, such as "cancer" or "1"}
 }
 \value{
-output a doIMRMC formatted data frame: rows for truth and rows for data
+output a doIMRMC formatted data frame: rows for truth and rows for data.
+The results will be an iMRMC formatted data frame, see \link{dfMRMC_example}
 }
 \description{
 Convert a data frame with all needed factors to doIMRMC formatted data frame

@@ -2,7 +2,7 @@
 % Please edit documentation in R/limitsOfAgreement.R
 \name{getBRBM}
 \alias{getBRBM}
-\title{Get between-reader, between-modality paired data from an MRMC data file}
+\title{Get between-reader, between-modality paired data from an MRMC data frame}
 \usage{
 getBRBM(mcsData, modality.X, modality.Y)
 }
@@ -18,7 +18,7 @@ The result of merging the modality.X and modality.Y subsets of mcsData by caseID
  for every pair of readers
 }
 \description{
-Get between-reader, between-modality paired data from an MRMC data file
+Get between-reader, between-modality paired data from an MRMC data frame
 }
 \details{
 If modality.Y = modality.X, then the data would be between-reader, within-modality (BRWM).
